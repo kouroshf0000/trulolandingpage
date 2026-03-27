@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.node.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.api.tsbuildinfo",
+    "types": ["node"],
+    "baseUrl": "."
+  },
+  "include": ["api/**/*.ts", "src/shared/**/*.ts"]
+}

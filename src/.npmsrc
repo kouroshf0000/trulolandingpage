@@ -1,0 +1,3 @@
+# CISO Directive 07: Use exact versions for installs to prevent silent dependency drift
+# Run `npm ci` (not `npm install`) in CI/production so package-lock.json pins versions
+save-exact=true

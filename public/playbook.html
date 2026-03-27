@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trulo — Sales Operations Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0F2235;
+    --white: #ffffff;
+    --orange: #E67451;
+    --gray-1: #f9f7f4;
+    --gray-2: #e2e8f0;
+    --gray-3: #cbd5e1;
+    --gray-4: #64748b;
+    --gray-5: #475569;
+    --sidebar-w: 260px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { height: 100%; }
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f9f7f4;
+    color: var(--black);
+    display: flex;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: var(--sidebar-w);
+    height: 100%;
+    background: var(--white);
+    border-right: 1px solid var(--gray-2);
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 100;
+    padding: 0 0 40px 0;
+  }
+
+  .sidebar-logo {
+    padding: 28px 24px 24px;
+    border-bottom: 1px solid var(--gray-2);
+  }
+  .sidebar-logo span {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--black);
+  }
+  .sidebar-logo em {
+    display: block;
+    font-style: normal;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--gray-4);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  .nav-section {
+    padding: 20px 24px 4px;
+  }
+  .nav-section-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gray-4);
+    margin-bottom: 8px;
+  }
+  .nav-item {
+    display: block;
+    padding: 9px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-5);
+    text-decoration: none;
+    margin-bottom: 2px;
+    transition: all 0.15s;
+  }
+  .nav-item:hover { background: var(--gray-2); color: var(--black); }
+  .nav-item.active { background: rgba(230,116,81,0.1); color: var(--orange); }
+  .nav-item .dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+    position: relative; top: -1px;
+  }
+  .dot-orange { background: var(--orange); }
+  .dot-green { background: #4CAF50; }
+  .dot-gray { background: var(--gray-3); }
+
+  /* ── MAIN ── */
+  #main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 48px 40px 60px;
+    max-width: 960px;
+  }
+
+  /* ── HEADER ── */
+  .page-header {
+    border-bottom: 1px solid var(--gray-2);
+    padding-bottom: 40px;
+    margin-bottom: 56px;
+  }
+  .page-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 12px;
+  }
+  .page-header h1 {
+    font-size: 40px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    color: var(--black);
+    margin-bottom: 16px;
+  }
+  .page-header p {
+    font-size: 15px;
+    color: var(--gray-4);
+    line-height: 1.6;
+    max-width: 600px;
+  }
+
+  /* ── QUICK REFERENCE CARDS ── */
+  .quick-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 64px;
+  }
+  .quick-card {
+    background: var(--white);
+    border: 1px solid var(--gray-2);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .quick-card .label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray-4);
+    margin-bottom: 8px;
+  }
+  .quick-card .value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--black);
+  }
+  .quick-card .sub {
+    font-size: 12px;
+    color: var(--gray-4);
+    margin-top: 4px;
+  }
+  .quick-card.highlight { border-color: var(--orange); }
+  .quick-card.highlight .value { color: var(--orange); }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 72px;
+    scroll-margin-top: 40px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .section-number {
+    width: 36px; height: 36px;
+    border-radius: 6px;
+    background: var(--orange);
+    color: var(--black);
+    font-size: 14px;
+    font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-number.gray {
+    background: var(--gray-2);
+    color: var(--black);
+  }
+  .section h2 {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.3px;
+    color: var(--black);
+  }
+  .section-sub {
+    font-size: 13px;
+    color: var(--gray-4);
+    margin-top: 3px;
+  }
+
+  /* ── STEP LIST ── */
+  .step-list {
+    border: 1px solid var(--gray-2);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr);
+    border-bottom: 1px solid var(--gray-2);
+    transition: background 0.12s;
+  }
+  .step:last-child { border-bottom: none; }
+  .step:hover { background: var(--gray-1); }
+  .step-num {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--orange);
+    border-right: 1px solid var(--gray-2);
+  }
+  .step-content {
+    padding: 18px 22px;
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+  .step-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 6px;
+  }
+  .step-desc {
+    font-size: 13px;
+    color: var(--gray-4);
+    line-height: 1.6;
+  }
+  .step-desc ul {
+    margin: 8px 0 0 16px;
+  }
+  .step-desc li {
+    margin-bottom: 4px;
+    color: var(--gray-4);
+  }
+  .step-desc li strong {
+    color: var(--black);
+    font-weight: 600;
+  }
+  .step-meta {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-orange { background: rgba(230,116,81,0.15); color: var(--orange); border: 1px solid rgba(230,116,81,0.3); }
+  .badge-green { background: rgba(76,175,80,0.12); color: #6FCF74; border: 1px solid rgba(76,175,80,0.25); }
+  .badge-gray { background: var(--gray-2); color: var(--gray-5); border: 1px solid var(--gray-3); }
+  .badge-red { background: rgba(229,57,53,0.12); color: #EF5350; border: 1px solid rgba(229,57,53,0.25); }
+  .badge-blue { background: rgba(66,165,245,0.10); color: #64B5F6; border: 1px solid rgba(66,165,245,0.2); }
+
+  /* ── TABLE ── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--gray-2);
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 13px;
+  }
+  .data-table thead tr {
+    background: var(--gray-1);
+  }
+  .data-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gray-4);
+    border-bottom: 1px solid var(--gray-2);
+  }
+  .data-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--gray-2);
+    color: var(--gray-5);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(0,0,0,0.02); }
+  .data-table td strong { color: var(--black); font-weight: 600; }
+  .data-table td.critical { color: #EF5350; font-weight: 600; }
+
+  /* ── PAYMENT FLOW ── */
+  .payment-flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0;
+    border: 1px solid var(--gray-2);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .pf-node {
+    flex: 1;
+    min-width: 100px;
+    padding: 20px 18px;
+    border-right: 1px solid var(--gray-2);
+    text-align: center;
+  }
+  .pf-node:last-child { border-right: none; }
+  .pf-node .pf-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray-4);
+    margin-bottom: 8px;
+  }
+  .pf-node .pf-amount {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--black);
+    margin-bottom: 4px;
+  }
+  .pf-node .pf-sub {
+    font-size: 11px;
+    color: var(--gray-4);
+  }
+  .pf-node.highlight { background: rgba(230,116,81,0.06); }
+  .pf-node.highlight .pf-amount { color: var(--orange); }
+
+  /* ── ALERT BOX ── */
+  .alert {
+    padding: 16px 20px;
+    border-radius: 8px;
+    border-left: 3px solid;
+    margin: 20px 0;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .alert-orange { background: rgba(230,116,81,0.08); border-color: var(--orange); color: var(--gray-5); }
+  .alert-orange strong { color: var(--orange); }
+  .alert-green { background: rgba(76,175,80,0.08); border-color: #4CAF50; color: var(--gray-5); }
+  .alert-green strong { color: #6FCF74; }
+  .alert-red { background: rgba(229,57,53,0.08); border-color: #E53935; color: var(--gray-5); }
+  .alert-red strong { color: #EF5350; }
+
+  /* ── TWO COL ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 16px;
+  }
+  .col-card {
+    background: var(--gray-1);
+    border: 1px solid var(--gray-2);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .col-card h4 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 12px;
+  }
+  .col-card ul {
+    list-style: none;
+    padding: 0;
+  }
+  .col-card li {
+    font-size: 13px;
+    color: var(--gray-4);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--gray-2);
+    display: flex;
+    gap: 8px;
+  }
+  .col-card li:last-child { border-bottom: none; }
+  .col-card li::before { content: '→'; color: var(--orange); flex-shrink: 0; }
+
+  /* ── TIMELINE ── */
+  .timeline {
+    position: relative;
+    padding-left: 28px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: var(--gray-2);
+  }
+  .tl-item {
+    position: relative;
+    margin-bottom: 24px;
+  }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--gray-3);
+    border: 2px solid var(--gray-1);
+  }
+  .tl-item.active::before { background: var(--orange); }
+  .tl-day {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 4px;
+  }
+  .tl-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 4px;
+  }
+  .tl-desc {
+    font-size: 13px;
+    color: var(--gray-4);
+    line-height: 1.5;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--gray-2);
+    margin: 48px 0;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--gray-1); }
+  ::-webkit-scrollbar-thumb { background: var(--gray-3); border-radius: 3px; }
+
+  .section .data-table { max-width: 100%; overflow-x: auto; }
+
+  @media (max-width: 900px) {
+    #sidebar { display: none; }
+    #main { margin-left: 0; padding: 32px 24px; }
+    .quick-grid { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+    .payment-flow { flex-direction: column; }
+    .pf-node { border-right: none; border-bottom: 1px solid var(--gray-2); min-width: 0; }
+    .page-header h1 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <span>Trulo</span>
+    <em>Sales Operations Playbook</em>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Overview</div>
+    <a href="#quick-ref" class="nav-item"><span class="dot dot-orange"></span>Quick Reference</a>
+    <a href="#prerequisites" class="nav-item"><span class="dot dot-orange"></span>Prerequisites</a>
+    <a href="#esign" class="nav-item"><span class="dot dot-green"></span>E-Signature Setup</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Onboarding Flows</div>
+    <a href="#host-journey" class="nav-item"><span class="dot dot-orange"></span>Host Journey</a>
+    <a href="#tenant-journey" class="nav-item"><span class="dot dot-orange"></span>Tenant Journey</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Booking</div>
+    <a href="#booking-lifecycle" class="nav-item"><span class="dot dot-orange"></span>Booking Lifecycle</a>
+    <a href="#payment-flow" class="nav-item"><span class="dot dot-green"></span>Payment Flow</a>
+    <a href="#termination" class="nav-item"><span class="dot dot-gray"></span>Termination</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Legal</div>
+    <a href="#contracts-matrix" class="nav-item"><span class="dot dot-orange"></span>Contracts Matrix</a>
+    <a href="#insurance" class="nav-item"><span class="dot dot-gray"></span>Insurance Requirements</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Account Management</div>
+    <a href="#account-mgmt" class="nav-item"><span class="dot dot-gray"></span>Ongoing Management</a>
+    <a href="#escalation" class="nav-item"><span class="dot dot-gray"></span>Escalation Paths</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="page-tag">Internal — Sales Team Only</div>
+    <h1>Sales Operations<br>Playbook</h1>
+    <p>The complete step-by-step guide for onboarding Hosts and Tenants, managing bookings, executing contracts, and handling accounts. Built for Kourosh and Elliott. Updated March 2026.</p>
+  </div>
+
+  <!-- QUICK REFERENCE -->
+  <div class="section" id="quick-ref">
+    <div class="section-header">
+      <div class="section-number gray">→</div>
+      <div>
+        <h2>Quick Reference</h2>
+        <div class="section-sub">Core commercial terms — know these cold</div>
+      </div>
+    </div>
+    <div class="quick-grid">
+      <div class="quick-card highlight">
+        <div class="label">Host Fee</div>
+        <div class="value">10%</div>
+        <div class="sub">Trulo takes 10% from Host's monthly payout</div>
+      </div>
+      <div class="quick-card highlight">
+        <div class="label">Tenant Service Fee</div>
+        <div class="value">2%</div>
+        <div class="sub">Added to listing price — paid by Tenant on top</div>
+      </div>
+      <div class="quick-card">
+        <div class="label">First Payout Timing</div>
+        <div class="value">Day 7</div>
+        <div class="sub">Funds released to Host after 7 days of occupancy</div>
+      </div>
+      <div class="quick-card">
+        <div class="label">Protected Period</div>
+        <div class="value">30 Days</div>
+        <div class="sub">Neither party can terminate in first 30 days</div>
+      </div>
+      <div class="quick-card">
+        <div class="label">Rolling Notice</div>
+        <div class="value">30 Days</div>
+        <div class="sub">After day 30, either party exits with 30-day written notice</div>
+      </div>
+      <div class="quick-card">
+        <div class="label">Security Deposit</div>
+        <div class="value">None</div>
+        <div class="sub">Never collected — not by Trulo or by Hosts outside the platform</div>
+      </div>
+    </div>
+
+    <div style="background: var(--gray-1); border: 1px solid var(--gray-2); border-radius: 8px; padding: 20px 24px; margin-top: 8px;">
+      <div style="font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-4); margin-bottom: 16px;">Payment Example — $5,000/mo Listing</div>
+      <div class="payment-flow">
+        <div class="pf-node">
+          <div class="pf-label">Tenant Pays</div>
+          <div class="pf-amount">$5,100</div>
+          <div class="pf-sub">$5,000 + 2% service fee</div>
+        </div>
+        <div class="pf-node">
+          <div class="pf-label">Trulo Holds</div>
+          <div class="pf-amount">$5,100</div>
+          <div class="pf-sub">Until Day 7 of occupancy</div>
+        </div>
+        <div class="pf-node highlight">
+          <div class="pf-label">Host Receives</div>
+          <div class="pf-amount">$4,500</div>
+          <div class="pf-sub">90% of listing price</div>
+        </div>
+        <div class="pf-node highlight">
+          <div class="pf-label">Trulo Keeps</div>
+          <div class="pf-amount">$600</div>
+          <div class="pf-sub">$500 host fee + $100 tenant fee</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PREREQUISITES -->
+  <div class="section" id="prerequisites">
+    <div class="section-header">
+      <div class="section-number">!</div>
+      <div>
+        <h2>Prerequisites — Before Customer #1</h2>
+        <div class="section-sub">Every item below must be confirmed before you close your first deal</div>
+      </div>
+    </div>
+
+    <div class="alert alert-orange">
+      <strong>Founder Gate:</strong> Do not attempt to onboard a paying customer until all Critical items below are confirmed complete. Closing a deal without these in place creates legal exposure that cannot be retroactively fixed.
+    </div>
+
+    <table class="data-table" style="margin-top: 20px;">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Priority</th>
+          <th>Who Owns It</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Master Terms, Host Agreement, Tenant Agreement, Commercial License Agreement reviewed by MA counsel</strong></td>
+          <td><span class="badge badge-red">Critical</span></td>
+          <td>Kourosh + Lawyer</td>
+          <td><span class="badge badge-orange">In Review</span></td>
+        </tr>
+        <tr>
+          <td><strong>PandaDoc (or equivalent) account set up with all 4 customer-facing templates loaded</strong></td>
+          <td><span class="badge badge-red">Critical</span></td>
+          <td>Elliott</td>
+          <td><span class="badge badge-gray">To Do</span></td>
+        </tr>
+        <tr>
+          <td><strong>Stripe account live and connected to platform</strong></td>
+          <td><span class="badge badge-red">Critical</span></td>
+          <td>CTO / Kourosh</td>
+          <td><span class="badge badge-gray">To Do</span></td>
+        </tr>
+        <tr>
+          <td><strong>W-9 collection flow live</strong> — Hosts must provide TIN before receiving first payout (IRS 1099-K compliance)</td>
+          <td><span class="badge badge-red">Critical</span></td>
+          <td>CTO / Kourosh</td>
+          <td><span class="badge badge-gray">To Do</span></td>
+        </tr>
+        <tr>
+          <td><strong>Superior landlord consent checkbox</strong> added to Host listing creation flow</td>
+          <td><span class="badge badge-red">Critical</span></td>
+          <td>CTO</td>
+          <td><span class="badge badge-gray">To Do</span></td>
+        </tr>
+        <tr>
+          <td><strong>Written Information Security Program (WISP)</strong> drafted and signed — required by MA law before storing any user data</td>
+          <td><span class="badge badge-red">Critical</span></td>
+          <td>Kourosh</td>
+          <td><span class="badge badge-gray">To Do</span></td>
+        </tr>
+        <tr>
+          <td><strong>Delaware → MA Foreign Corporation registration</strong> filed with MA Secretary of State</td>
+          <td><span class="badge badge-orange">High</span></td>
+          <td>Lawyer</td>
+          <td><span class="badge badge-gray">Confirm</span></td>
+        </tr>
+        <tr>
+          <td><strong>FinCEN Beneficial Ownership report</strong> filed for Trulo Corporation</td>
+          <td><span class="badge badge-orange">High</span></td>
+          <td>Lawyer</td>
+          <td><span class="badge badge-gray">Confirm</span></td>
+        </tr>
+        <tr>
+          <td><strong>Tenant COI requirements defined</strong> — minimum coverage amounts, named insured language, Trulo as additional insured</td>
+          <td><span class="badge badge-orange">High</span></td>
+          <td>Kourosh + Lawyer</td>
+          <td><span class="badge badge-gray">To Do</span></td>
+        </tr>
+        <tr>
+          <td><strong>GDPR decision made</strong> — either geographic restriction (US-only) or GDPR addendum in Privacy Policy</td>
+          <td><span class="badge badge-orange">High</span></td>
+          <td>Kourosh</td>
+          <td><span class="badge badge-gray">To Do</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="divider">
+
+  <!-- E-SIGN SETUP -->
+  <div class="section" id="esign">
+    <div class="section-header">
+      <div class="section-number gray">✍</div>
+      <div>
+        <h2>E-Signature Setup — Recommendation</h2>
+        <div class="section-sub">You need this before you can close your first deal</div>
+      </div>
+    </div>
+
+    <div class="alert alert-green">
+      <strong>Recommendation: PandaDoc Free Plan.</strong> Unlimited documents, unlimited e-signatures, no per-envelope limit. Build reusable templates for each contract. Upgrade to Growth ($49/mo) when volume picks up. Do not use DocuSign free (3 envelopes/month limit) or HelloSign free (3 docs/month limit).
+    </div>
+
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Create PandaDoc account at pandadoc.com — free plan</div>
+          <div class="step-desc">Use legal@jointrulo.com as the sender address. Set up your company profile with Trulo name, logo, and Boston address.</div>
+          <div class="step-meta"><span class="badge badge-green">Free</span><span class="badge badge-gray">~15 min</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Build 4 document templates</div>
+          <div class="step-desc">
+            Upload and templatize these four documents (once your lawyer clears them):
+            <ul>
+              <li><strong>Template 1:</strong> Host Listing Agreement — Host signature only</li>
+              <li><strong>Template 2:</strong> Tenant User Agreement — Tenant signature only</li>
+              <li><strong>Template 3:</strong> Commercial License Agreement — Host + Tenant signatures + Trulo countersignature</li>
+              <li><strong>Template 4:</strong> Mutual NDA (if needed pre-deal) — Both parties</li>
+            </ul>
+          </div>
+          <div class="step-meta"><span class="badge badge-orange">Required Before First Deal</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Add merge fields for variable data</div>
+          <div class="step-desc">
+            At minimum, the Commercial License Agreement needs auto-fill fields for:
+            <ul>
+              <li>Host legal name + business entity + address</li>
+              <li>Tenant legal name + business entity + address</li>
+              <li>Space address + square footage + floor/unit</li>
+              <li>Monthly License Fee amount</li>
+              <li>License start date</li>
+              <li>Tenant Service Fee amount (2% of License Fee)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Test end-to-end with a dummy deal before going live</div>
+          <div class="step-desc">Send yourself and Elliott test documents. Confirm signatures are legally captured, audit trail is generated, and signed PDFs are stored and accessible.</div>
+          <div class="step-meta"><span class="badge badge-red">Do Not Skip</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- HOST JOURNEY -->
+  <div class="section" id="host-journey">
+    <div class="section-header">
+      <div class="section-number">H</div>
+      <div>
+        <h2>Host Journey</h2>
+        <div class="section-sub">From first contact to live listing — complete flow for property owners and landlords</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-card">
+        <h4>Ideal Host Profile</h4>
+        <ul>
+          <li>Owns or manages commercial space in Boston metro</li>
+          <li>Has vacant or underutilized space (retail, office, flex, light industrial)</li>
+          <li>Is a legal entity (LLC, Corp, Partnership) — not an individual sole proprietor</li>
+          <li>Has authority to sublicense (fee owner or written landlord consent)</li>
+          <li>Looking for 30-day+ occupancy, not hourly/event bookings</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <h4>Disqualifying Factors</h4>
+        <ul>
+          <li>Individual (not a business entity) — increases classification risk</li>
+          <li>Cannot confirm landlord consent to sublicense</li>
+          <li>Space has known zoning violations or open ISD complaints</li>
+          <li>Asking for security deposits outside the platform</li>
+          <li>Space is residential — Trulo is commercial only</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Outreach & Qualification Call</div>
+          <div class="step-desc">
+            Make contact via direct mail campaign, LinkedIn, or inbound lead. On the discovery call, collect:
+            <ul>
+              <li><strong>Property details:</strong> address, square footage, current use, zoning classification</li>
+              <li><strong>Ownership:</strong> do they own outright or are they a sub-landlord? If sub-landlord, do they have written consent to sublicense?</li>
+              <li><strong>Entity:</strong> what legal entity holds the property? (Need LLC/Corp name and state of formation)</li>
+              <li><strong>Asking rate:</strong> monthly License Fee they want to charge</li>
+              <li><strong>Availability:</strong> when can it be listed? Any existing tenant obligations?</li>
+            </ul>
+          </div>
+          <div class="step-meta"><span class="badge badge-gray">Discovery</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Send Host Listing Agreement via PandaDoc</div>
+          <div class="step-desc">
+            Before any listing is created or any data is collected, the Host must sign the <strong>Host Listing Agreement</strong>. This document covers:
+            <ul>
+              <li>Trulo's 10% Host Fee</li>
+              <li>Superior Landlord Consent representation + mandatory checkbox</li>
+              <li>Platform rules, listing standards, and cancellation obligations</li>
+              <li>Indemnification of Trulo for sublicensing authority failures</li>
+              <li>Tax obligations and W-9/TIN submission requirement</li>
+            </ul>
+            Send via PandaDoc. Do not proceed to Step 3 until you have a signed copy.
+          </div>
+          <div class="step-meta"><span class="badge badge-red">Signature Required</span><span class="badge badge-orange">Host Only</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Platform Account Creation + Clickwrap Agreements</div>
+          <div class="step-desc">
+            Host creates their account on jointrulo.com. At account creation, the platform presents clickwrap acceptance for:
+            <ul>
+              <li><strong>Master Terms of Service</strong> — platform-wide rules, arbitration clause, liability limits</li>
+              <li><strong>Privacy Policy</strong> — data collection, 1099-K data sharing with IRS</li>
+              <li><strong>Cookie Policy</strong></li>
+              <li><strong>E-Sign Disclosure &amp; Consent</strong> — legally validates all electronic signatures</li>
+            </ul>
+            <em>During manual phase: email the Host PDFs of all four documents above and collect written acknowledgment before proceeding.</em>
+          </div>
+          <div class="step-meta"><span class="badge badge-green">Clickwrap</span><span class="badge badge-gray">Platform-Level</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">W-9 Collection</div>
+          <div class="step-desc">
+            Before the Host receives any payout, collect a completed and signed <strong>IRS Form W-9</strong>.
+            <ul>
+              <li>Business entities: provide EIN</li>
+              <li>Individuals (if approved): provide SSN</li>
+              <li>Non-US Hosts: W-8BEN or W-8BEN-E series</li>
+            </ul>
+            Store securely. Do not issue any payouts until W-9 is on file. Failure to collect triggers IRS mandatory 24% backup withholding on all payouts.
+          </div>
+          <div class="step-meta"><span class="badge badge-red">IRS Required</span><span class="badge badge-gray">Before First Payout</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Listing Creation</div>
+          <div class="step-desc">
+            Work with the Host to build their listing. Required fields:
+            <ul>
+              <li><strong>Space details:</strong> address, floor/unit, square footage, photos (minimum 8), description</li>
+              <li><strong>Permitted Zoning Uses:</strong> Boston zoning classification + what use types are permitted</li>
+              <li><strong>ADA Accessibility Disclosure:</strong> accessible entrance Y/N, accessible restroom Y/N, accessible path of travel Y/N, known barriers</li>
+              <li><strong>Superior Landlord Consent:</strong> Host selects one — (a) Fee owner, (b) Written landlord consent on file, or (c) Lease permits sublicensing without consent. Upload documentation for (b) or (c).</li>
+              <li><strong>Monthly License Fee:</strong> Host-set price in USD</li>
+              <li><strong>Availability date</strong></li>
+            </ul>
+          </div>
+          <div class="step-meta"><span class="badge badge-orange">All Fields Required</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <div class="step-title">Internal Listing Review</div>
+          <div class="step-desc">
+            Before the listing goes live, Kourosh or Elliott must verify:
+            <ul>
+              <li>Host Listing Agreement is signed ✓</li>
+              <li>W-9 is on file ✓</li>
+              <li>Superior landlord consent documentation is uploaded ✓</li>
+              <li>All required listing fields are complete ✓</li>
+              <li>Photos are sufficient quality ✓</li>
+              <li>Monthly rate is reasonable for the Boston market ✓</li>
+            </ul>
+          </div>
+          <div class="step-meta"><span class="badge badge-green">Founder Review</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">7</div>
+        <div class="step-content">
+          <div class="step-title">Listing Goes Live</div>
+          <div class="step-desc">Approve the listing. Host receives email confirmation. Listing appears on jointrulo.com. Host is now active and eligible to receive booking requests.</div>
+          <div class="step-meta"><span class="badge badge-green">Host Active</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- TENANT JOURNEY -->
+  <div class="section" id="tenant-journey">
+    <div class="section-header">
+      <div class="section-number">T</div>
+      <div>
+        <h2>Tenant Journey</h2>
+        <div class="section-sub">From first contact to approved booking — complete flow for businesses seeking space</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-card">
+        <h4>Ideal Tenant Profile</h4>
+        <ul>
+          <li>Early-stage brand, startup, or creator needing commercial space</li>
+          <li>Business entity (LLC, Corp, sole proprietor with EIN)</li>
+          <li>Needs 30+ days of dedicated commercial space</li>
+          <li>Has or can obtain commercial general liability insurance</li>
+          <li>Boston area or relocating to Boston metro</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <h4>Use Cases We Accept</h4>
+        <ul>
+          <li>Pop-up retail / brand activation</li>
+          <li>Creative studio / production space</li>
+          <li>Office / co-working (dedicated, not shared desk)</li>
+          <li>Light warehouse / fulfillment</li>
+          <li>Showroom / gallery</li>
+          <li>Food production (zoning-dependent — must verify)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Outreach & Qualification Call</div>
+          <div class="step-desc">
+            Inbound from waitlist, referral, or outbound from target list. On discovery call, collect:
+            <ul>
+              <li><strong>Use case:</strong> what will they do in the space? (Verify not on prohibited uses list)</li>
+              <li><strong>Duration needed:</strong> target start date and anticipated length</li>
+              <li><strong>Size/type:</strong> square footage, location preference, amenity requirements</li>
+              <li><strong>Entity:</strong> legal business name, type, state of formation</li>
+              <li><strong>Budget:</strong> monthly budget range</li>
+              <li><strong>Insurance:</strong> do they have a commercial GL policy or can they get one?</li>
+            </ul>
+          </div>
+          <div class="step-meta"><span class="badge badge-gray">Discovery</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Platform Account Creation + Clickwrap Agreements</div>
+          <div class="step-desc">
+            Tenant creates account on jointrulo.com. Platform presents clickwrap for:
+            <ul>
+              <li><strong>Master Terms of Service</strong></li>
+              <li><strong>Privacy Policy</strong></li>
+              <li><strong>Cookie Policy</strong></li>
+              <li><strong>E-Sign Disclosure &amp; Consent</strong></li>
+            </ul>
+            <em>During manual phase: email PDFs of all four documents and collect written acknowledgment before proceeding.</em>
+          </div>
+          <div class="step-meta"><span class="badge badge-green">Clickwrap</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Sign Tenant User Agreement via PandaDoc</div>
+          <div class="step-desc">
+            Send the <strong>Tenant User Agreement</strong> via PandaDoc. This document covers:
+            <ul>
+              <li>Tenant's use obligations and prohibited uses</li>
+              <li>Insurance requirements (must provide COI)</li>
+              <li>Zoning compliance responsibility (sole responsibility of Tenant)</li>
+              <li>Superior landlord consent disclosure (Trulo does not warrant Host's sublicensing authority)</li>
+              <li>2% Tenant Service Fee acknowledgment</li>
+              <li>Corporate Transparency Act (CTA) / FinCEN BOI representation</li>
+              <li>Lawful source of funds representation</li>
+              <li>ADA accessibility acknowledgment if operating a place of public accommodation</li>
+            </ul>
+            Do not send space matches until this agreement is signed.
+          </div>
+          <div class="step-meta"><span class="badge badge-red">Signature Required</span><span class="badge badge-orange">Tenant Only</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Match Tenant to Available Listings</div>
+          <div class="step-desc">
+            Present 2–3 curated listing options based on their requirements. Walk them through each option — space details, zoning permitted uses, ADA accessibility, and listing price. Guide them to the best match. Do not send mass listings; Trulo is a curator, not a directory.
+          </div>
+          <div class="step-meta"><span class="badge badge-orange">Sales Judgment</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Tenant Submits Booking Request</div>
+          <div class="step-desc">
+            Tenant selects a listing and submits a booking request specifying:
+            <ul>
+              <li>Requested start date</li>
+              <li>Intended use (must match permitted zoning uses)</li>
+              <li>Business entity name</li>
+            </ul>
+            Stripe payment method is collected and authorized (not charged yet) at this point.
+          </div>
+          <div class="step-meta"><span class="badge badge-gray">Pending Host Approval</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <div class="step-title">Host Reviews and Accepts Booking Request</div>
+          <div class="step-desc">
+            Host has 48 hours to accept or decline the booking request. Kourosh or Elliott should proactively contact the Host to ensure timely response. If Host declines without cause, flag for review — pattern of unexplained declines may indicate discrimination policy issue.
+          </div>
+          <div class="step-meta"><span class="badge badge-gray">48-Hour Window</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- BOOKING LIFECYCLE -->
+  <div class="section" id="booking-lifecycle">
+    <div class="section-header">
+      <div class="section-number">B</div>
+      <div>
+        <h2>Booking Lifecycle</h2>
+        <div class="section-sub">From booking confirmation through occupancy to termination</div>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item active">
+        <div class="tl-day">Booking Confirmed</div>
+        <div class="tl-title">Commercial License Agreement Executed</div>
+        <div class="tl-desc">
+          The moment a Host accepts a booking request, the <strong>Commercial License Agreement</strong> is generated and sent via PandaDoc to both Host and Tenant. Both parties must sign before any funds are charged.<br><br>
+          <strong>What the CLA covers:</strong> Space details, monthly License Fee, start date, 30-day protected period, 30-day rolling notice, permitted uses, zoning classification, ADA disclosure, no security deposit clause, insurance requirements, holdover consequences (150% rate), and dispute resolution (AAA arbitration, Boston MA).
+        </div>
+      </div>
+      <div class="tl-item active">
+        <div class="tl-day">Before Occupancy Begins</div>
+        <div class="tl-title">COI Collection + Payment Authorization</div>
+        <div class="tl-desc">
+          Two things must be complete before Day 1:<br><br>
+          <strong>1. Certificate of Insurance (COI)</strong> — Tenant must upload or email a COI showing commercial general liability insurance meeting Trulo's requirements. Trulo and Host must both be named as additional insured. Do not allow occupancy without a valid COI on file.<br><br>
+          <strong>2. First Month's Payment</strong> — Stripe charges the Tenant's payment method for Month 1. Amount = Monthly License Fee + 2% Tenant Service Fee. Funds held by Trulo until Day 7 of occupancy.
+        </div>
+      </div>
+      <div class="tl-item active">
+        <div class="tl-day">Day 1 — Occupancy Begins</div>
+        <div class="tl-title">License Period Starts. 30-Day Protected Period Begins.</div>
+        <div class="tl-desc">
+          Tenant has access to the Space. The <strong>30-day protected period</strong> is now running. Neither Host nor Tenant may issue a termination notice during this period. The License Fee clock starts.
+        </div>
+      </div>
+      <div class="tl-item active">
+        <div class="tl-day">Day 7</div>
+        <div class="tl-title">First Payout Released to Host</div>
+        <div class="tl-desc">
+          After 7 days of confirmed occupancy without dispute, Trulo releases Month 1 funds to Host via Stripe Connect.<br><br>
+          <strong>Host receives:</strong> Monthly License Fee × 90%<br>
+          <strong>Trulo retains:</strong> 10% Host Fee + 2% Tenant Service Fee<br><br>
+          If a legitimate dispute is filed within the first 7 days, funds are held pending resolution.
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-day">Monthly (Recurring)</div>
+        <div class="tl-title">Automatic Monthly Billing Cycle</div>
+        <div class="tl-desc">
+          On each monthly anniversary of the start date, Stripe automatically charges Tenant and releases funds to Host within 7 days. No manual action required once the booking is active on the platform.
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-day">After Day 30</div>
+        <div class="tl-title">Rolling Notice Period Opens</div>
+        <div class="tl-desc">
+          Either party may now issue a <strong>30-day written notice of termination</strong>. Notice must be submitted in writing through the platform (or via email to legal@jointrulo.com during manual phase). The License continues through the end of the 30-day notice period — partial months are pro-rated.
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-day">Termination Date</div>
+        <div class="tl-title">Move-Out + Final Billing</div>
+        <div class="tl-desc">
+          Tenant vacates the Space on or before the effective termination date. Final month is pro-rated. Host confirms space is in acceptable condition. Final payout released to Host within 7 days of termination date, less any damage claims submitted through the platform.
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-red" style="margin-top: 32px;">
+      <strong>Holdover Warning:</strong> If Tenant remains in the Space after the effective termination date without Host's written consent, a holdover fee of <strong>150% of the monthly License Fee</strong> applies for each month or partial month of unauthorized occupancy. Trulo may immediately suspend the Tenant's platform access and withhold pending payments. Do not waive this provision without legal counsel.
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PAYMENT FLOW -->
+  <div class="section" id="payment-flow">
+    <div class="section-header">
+      <div class="section-number gray">$</div>
+      <div>
+        <h2>Payment Flow</h2>
+        <div class="section-sub">How money moves through the platform</div>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Who Pays</th>
+          <th>Amount</th>
+          <th>Who Receives</th>
+          <th>Timing</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Booking Confirmation</strong></td>
+          <td>Tenant</td>
+          <td>Month 1 License Fee + 2% service fee</td>
+          <td>Trulo holds</td>
+          <td>At booking confirmation, before occupancy</td>
+        </tr>
+        <tr>
+          <td><strong>First Payout</strong></td>
+          <td>Trulo (releases)</td>
+          <td>90% of Month 1 License Fee</td>
+          <td>Host</td>
+          <td>Day 7 of occupancy (if no open dispute)</td>
+        </tr>
+        <tr>
+          <td><strong>Monthly Billing</strong></td>
+          <td>Tenant (auto)</td>
+          <td>License Fee + 2% service fee</td>
+          <td>Trulo holds → Host (7 days)</td>
+          <td>Monthly anniversary of start date</td>
+        </tr>
+        <tr>
+          <td><strong>Trulo Revenue</strong></td>
+          <td>—</td>
+          <td>10% of License Fee (from Host) + 2% service fee (from Tenant)</td>
+          <td>Trulo</td>
+          <td>On each payout cycle</td>
+        </tr>
+        <tr>
+          <td><strong>Holdover Fee</strong></td>
+          <td>Tenant</td>
+          <td>150% of monthly License Fee</td>
+          <td>Host (via Trulo)</td>
+          <td>Each month or partial month of unauthorized holdover</td>
+        </tr>
+        <tr>
+          <td><strong>Final Month (Termination)</strong></td>
+          <td>Tenant</td>
+          <td>Pro-rated License Fee for days remaining</td>
+          <td>Host (via Trulo, 7 days after termination)</td>
+          <td>On termination date</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="alert alert-orange" style="margin-top: 20px;">
+      <strong>Note on Security Deposits:</strong> Trulo does not collect security deposits. Hosts are contractually prohibited from collecting any deposit or fee outside the platform. If a Host attempts to collect a deposit directly, this is a material breach of the Host Listing Agreement and grounds for listing suspension.
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- CONTRACTS MATRIX -->
+  <div class="section" id="contracts-matrix">
+    <div class="section-header">
+      <div class="section-number">§</div>
+      <div>
+        <h2>Contracts Matrix</h2>
+        <div class="section-sub">Every document, who signs it, when, and how — complete picture</div>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Document</th>
+          <th>Signed By</th>
+          <th>When</th>
+          <th>Method</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>E-Sign Disclosure & Consent</strong><br><span style="font-size: 11px; color: var(--gray-4)">Validates legal enforceability of all e-signatures</span></td>
+          <td>Host + Tenant (each)</td>
+          <td>Account creation</td>
+          <td>Platform clickwrap</td>
+          <td><span class="badge badge-orange">Lawyer Review</span></td>
+        </tr>
+        <tr>
+          <td><strong>Master Terms of Service</strong><br><span style="font-size: 11px; color: var(--gray-4)">Platform rules, arbitration, liability limits, OFAC</span></td>
+          <td>Host + Tenant (each)</td>
+          <td>Account creation</td>
+          <td>Platform clickwrap</td>
+          <td><span class="badge badge-orange">Lawyer Review</span></td>
+        </tr>
+        <tr>
+          <td><strong>Privacy Policy</strong><br><span style="font-size: 11px; color: var(--gray-4)">Data collection, 1099-K IRS sharing, breach notification</span></td>
+          <td>Host + Tenant (each)</td>
+          <td>Account creation</td>
+          <td>Platform clickwrap</td>
+          <td><span class="badge badge-orange">Lawyer Review</span></td>
+        </tr>
+        <tr>
+          <td><strong>Host Listing Agreement</strong><br><span style="font-size: 11px; color: var(--gray-4)">10% fee, superior landlord consent, W-9 obligation, listing standards</span></td>
+          <td>Host only</td>
+          <td>Before listing creation</td>
+          <td>PandaDoc e-signature</td>
+          <td><span class="badge badge-orange">Lawyer Review</span></td>
+        </tr>
+        <tr>
+          <td><strong>W-9 Form (IRS)</strong><br><span style="font-size: 11px; color: var(--gray-4)">Taxpayer identification for 1099-K reporting</span></td>
+          <td>Host only</td>
+          <td>Before first payout</td>
+          <td>Email / Platform upload</td>
+          <td><span class="badge badge-red">Required — IRS Mandate</span></td>
+        </tr>
+        <tr>
+          <td><strong>Tenant User Agreement</strong><br><span style="font-size: 11px; color: var(--gray-4)">Use obligations, insurance req., zoning responsibility, CTA/BOI rep, ADA ack.</span></td>
+          <td>Tenant only</td>
+          <td>Before booking access</td>
+          <td>PandaDoc e-signature</td>
+          <td><span class="badge badge-orange">Lawyer Review</span></td>
+        </tr>
+        <tr>
+          <td><strong>Commercial License Agreement</strong><br><span style="font-size: 11px; color: var(--gray-4)">The core deal document — space, fee, dates, license terms, termination</span></td>
+          <td>Host + Tenant + Trulo countersign</td>
+          <td>At booking confirmation</td>
+          <td>PandaDoc e-signature (all parties)</td>
+          <td><span class="badge badge-orange">Lawyer Review</span></td>
+        </tr>
+        <tr>
+          <td><strong>Certificate of Insurance (COI)</strong><br><span style="font-size: 11px; color: var(--gray-4)">Tenant's commercial GL policy — Trulo + Host as additional insured</span></td>
+          <td>Tenant's insurer (provides to Tenant)</td>
+          <td>Before Day 1 of occupancy</td>
+          <td>Upload to platform or email to ops@jointrulo.com</td>
+          <td><span class="badge badge-red">Required Before Occupancy</span></td>
+        </tr>
+        <tr>
+          <td><strong>Mutual NDA</strong><br><span style="font-size: 11px; color: var(--gray-4)">Use if either party requests before deal terms are shared</span></td>
+          <td>Host + Tenant</td>
+          <td>Pre-deal (optional)</td>
+          <td>PandaDoc e-signature</td>
+          <td><span class="badge badge-green">Ready (template exists)</span></td>
+        </tr>
+        <tr>
+          <td><strong>High-Risk Use Addendum</strong><br><span style="font-size: 11px; color: var(--gray-4)">Required if Tenant's use involves elevated risk (food production, manufacturing, etc.)</span></td>
+          <td>Host + Tenant</td>
+          <td>At booking confirmation (if applicable)</td>
+          <td>PandaDoc e-signature</td>
+          <td><span class="badge badge-orange">Lawyer Review</span></td>
+        </tr>
+        <tr>
+          <td><strong>Non-Discrimination Policy</strong><br><span style="font-size: 11px; color: var(--gray-4)">FHA + state law compliance</span></td>
+          <td>Host (acknowledgment)</td>
+          <td>At listing creation</td>
+          <td>Platform clickwrap</td>
+          <td><span class="badge badge-orange">Lawyer Review</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="alert alert-green" style="margin-top: 20px;">
+      <strong>Documents you do NOT hand to customers:</strong> The following documents are internal or informational only — they do not require customer signature: Insurance Requirements Policy (Doc 9), Damage Claims Policy (Doc 11), Communication Standards Policy (Doc 13), AML Awareness Policy, WISP, Incident Response Plan. Customers should be able to read them if they ask, but no signature is required.
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- INSURANCE -->
+  <div class="section" id="insurance">
+    <div class="section-header">
+      <div class="section-number gray">⚑</div>
+      <div>
+        <h2>Insurance Requirements</h2>
+        <div class="section-sub">Current policy (Tenant-provided COI) + future embedded product</div>
+      </div>
+    </div>
+
+    <div style="background: var(--gray-1); border: 1px solid var(--orange); border-radius: 8px; padding: 24px; margin-bottom: 24px;">
+      <div style="font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px;">Current Policy — Tenant Brings Own COI</div>
+      <div class="step-list" style="border: 1px solid var(--gray-2);">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title">Tenant must provide a Certificate of Insurance (COI) before Day 1</div>
+            <div class="step-desc">
+              Minimum coverage requirements (confirm exact amounts with your lawyer):
+              <ul>
+                <li><strong>Commercial General Liability:</strong> $1,000,000 per occurrence / $2,000,000 aggregate (recommended)</li>
+                <li><strong>Additional Insured:</strong> Both Trulo Corporation AND the Host entity must be named as additional insured on the policy</li>
+                <li><strong>Policy term:</strong> Must be active through at least the first 30-day protected period; ideally the full anticipated occupancy</li>
+                <li><strong>Carrier:</strong> Admitted carrier in Massachusetts</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title">For High-Risk Uses: Additional Coverage Required</div>
+            <div class="step-desc">
+              If Tenant's use involves food production, manufacturing, events with public attendees, or other elevated risk uses, they must also provide:
+              <ul>
+                <li>Product liability coverage (if applicable)</li>
+                <li>Liquor liability (if serving alcohol at events)</li>
+                <li>Workers' compensation if they will have employees on site</li>
+              </ul>
+              High-Risk Use Addendum must also be executed.
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title">What to tell Tenants who don't have insurance</div>
+            <div class="step-desc">
+              Direct them to: <strong>Thimble</strong> (thimble.com) for on-demand commercial GL — policies available by the month. Most affordable and fastest option for early-stage tenants. Also: <strong>Hiscox</strong> or <strong>Next Insurance</strong> for small business GL. Do not tell them to use personal or renters insurance — these do not cover commercial use.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background: var(--gray-1); border: 1px solid var(--gray-2); border-radius: 8px; padding: 24px;">
+      <div style="font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-4); margin-bottom: 12px;">Future State — Embedded Insurance Product</div>
+      <p style="font-size: 13px; color: var(--gray-4); line-height: 1.6;">When Trulo's embedded insurance partner is live, the flow will change: instead of collecting a Tenant COI, Trulo will offer insurance at checkout — purchased by the Tenant as part of the booking flow at a per-month rate. The COI requirement will remain as a fallback option for Tenants with existing commercial policies. Host protection coverage (similar to Airbnb's AirCover) may also become available as a competitive differentiator.</p>
+      <p style="font-size: 13px; color: var(--gray-4); line-height: 1.6; margin-top: 12px;"><strong style="color: var(--black);">Note:</strong> Any embedded insurance product requires Massachusetts insurance producer licensing review before launch. Do not offer or market insurance without counsel sign-off.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ACCOUNT MANAGEMENT -->
+  <div class="section" id="account-mgmt">
+    <div class="section-header">
+      <div class="section-number gray">◈</div>
+      <div>
+        <h2>Ongoing Account Management</h2>
+        <div class="section-sub">What Kourosh and Elliott do after a deal closes</div>
+      </div>
+    </div>
+
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">W1</div>
+        <div class="step-content">
+          <div class="step-title">Week 1 Check-In (Both Parties)</div>
+          <div class="step-desc">
+            Email both Host and Tenant on Day 3 and Day 7. Confirm:
+            <ul>
+              <li>Tenant has access to the space and no issues with entry, utilities, or condition</li>
+              <li>Host has no concerns about Tenant's use</li>
+              <li>COI is on file and valid</li>
+              <li>Stripe payment processed successfully</li>
+            </ul>
+            Day 7 payout to Host triggers automatically — confirm Host receives it.
+          </div>
+          <div class="step-meta"><span class="badge badge-orange">Both Parties</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">M1</div>
+        <div class="step-content">
+          <div class="step-title">Month 1 Milestone Check</div>
+          <div class="step-desc">
+            At the end of the first month (Day 30), the protected period ends. Call both parties:
+            <ul>
+              <li>Is the relationship working? Any concerns?</li>
+              <li>Does either party anticipate needing to terminate?</li>
+              <li>Is Tenant's intended use still the same as at booking? (Flag use changes — may require amended CLA)</li>
+              <li>Is COI still active? Will it need to be renewed?</li>
+            </ul>
+          </div>
+          <div class="step-meta"><span class="badge badge-orange">Both Parties</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">MR</div>
+        <div class="step-content">
+          <div class="step-title">Monthly Recurring — Payment Monitoring</div>
+          <div class="step-desc">
+            Each month, verify:
+            <ul>
+              <li>Stripe charge succeeded — if a payment fails, notify both parties immediately. License is suspended until payment is resolved.</li>
+              <li>Host payout was released on schedule (7 days after charge)</li>
+              <li>No open disputes or damage claims</li>
+            </ul>
+          </div>
+          <div class="step-meta"><span class="badge badge-gray">Recurring</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">TN</div>
+        <div class="step-content">
+          <div class="step-title">Termination Notice Received</div>
+          <div class="step-desc">
+            When either party issues a 30-day notice:
+            <ul>
+              <li>Log the date notice was received — this is Day 0 of the 30-day notice period</li>
+              <li>Confirm the effective termination date in writing to both parties</li>
+              <li>Notify the other party immediately</li>
+              <li>Begin re-listing process with Host (don't wait until the last day)</li>
+              <li>Confirm Tenant move-out plan and final billing amount</li>
+            </ul>
+          </div>
+          <div class="step-meta"><span class="badge badge-gray">Trigger-Based</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ESCALATION -->
+  <div class="section" id="escalation">
+    <div class="section-header">
+      <div class="section-number gray">!</div>
+      <div>
+        <h2>Escalation Paths</h2>
+        <div class="section-sub">What to do when things go wrong</div>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Situation</th>
+          <th>Immediate Action</th>
+          <th>Contract Basis</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Tenant fails to pay</strong></td>
+          <td>Stripe retry triggers automatically. If retry fails after 3 attempts, suspend Tenant's platform access and notify Host. Issue written cure notice to Tenant — 5 business days to resolve. If unresolved, initiate termination.</td>
+          <td>Master Terms + Commercial License Agreement</td>
+        </tr>
+        <tr>
+          <td><strong>Tenant overholds (doesn't move out)</strong></td>
+          <td>Immediately activate holdover billing at 150%. Issue written notice to Tenant that they are in holdover. Do not advise Host to physically remove Tenant — that requires court process. Escalate to legal counsel.</td>
+          <td>Commercial License Agreement §5.5</td>
+        </tr>
+        <tr>
+          <td><strong>Host's superior landlord revokes consent</strong></td>
+          <td>Host must notify Trulo within 24 hours. This is an involuntary Host cancellation — 30% cancellation penalty applies. Trulo must find Tenant alternative space or refund remaining prepaid fees within 5 days.</td>
+          <td>Host Listing Agreement — Superior Landlord Consent section</td>
+        </tr>
+        <tr>
+          <td><strong>Property damage claim</strong></td>
+          <td>Document with photos within 24 hours of Tenant vacating. File damage claim through platform. Tenant's COI is the first line of recovery. For claims below insurance deductible, follow Damage Claims Policy (Doc 11). Never withhold a payout without formal claim filed.</td>
+          <td>Damage Claims Policy (Doc 11) + Tenant's COI</td>
+        </tr>
+        <tr>
+          <td><strong>Dispute between Host and Tenant</strong></td>
+          <td>Both parties must attempt good-faith resolution within 30 days (Dispute Resolution Policy, Doc 8). If unresolved, refer to AAA Commercial Arbitration, Boston MA. Trulo does not adjudicate disputes — provide the arbitration filing information and step aside.</td>
+          <td>Dispute Resolution Policy + Master Terms §17</td>
+        </tr>
+        <tr>
+          <td><strong>Host or Tenant alleges discrimination</strong></td>
+          <td>Do not dismiss. Document the complaint in writing immediately. Review Non-Discrimination Policy (Doc 12). Escalate to legal counsel within 24 hours. Preserve all platform communications.</td>
+          <td>Non-Discrimination Policy (Doc 12) + FHA</td>
+        </tr>
+        <tr>
+          <td><strong>Potential zoning violation</strong></td>
+          <td>If you become aware that Tenant's use may violate the Space's Boston zoning classification, notify Tenant in writing immediately. Tenant has sole responsibility for zoning compliance. Do not provide legal advice. Recommend Tenant consult the Boston Inspectional Services Department (ISD).</td>
+          <td>Tenant User Agreement + Zoning Disclosure Policy</td>
+        </tr>
+        <tr>
+          <td><strong>Data breach or security incident</strong></td>
+          <td>Activate Incident Response Plan. Notify MA AG and affected users without unreasonable delay (M.G.L. c. 93H). Do not downplay or delay. Escalate to legal counsel immediately.</td>
+          <td>WISP + Incident Response Plan (internal)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="alert alert-orange" style="margin-top: 24px;">
+      <strong>Standing Rule:</strong> Any situation involving a legal threat, regulatory inquiry, potential lawsuit, or press inquiry goes to Kourosh immediately — do not respond, make promises, or take action without Kourosh's direct sign-off. When in doubt, the answer is: "Let me look into this and get back to you within 24 hours."
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- FOOTER -->
+  <div style="padding: 32px 0 60px; text-align: center;">
+    <div style="font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gray-3);">Trulo Corporation — Internal Use Only</div>
+    <div style="font-size: 12px; color: var(--gray-3); margin-top: 8px;">Last updated March 16, 2026 &nbsp;·&nbsp; Boston, MA &nbsp;·&nbsp; jointrulo.com</div>
+  </div>
+
+</main>
+
+<script>
+  // Highlight active nav item on scroll
+  const sections = document.querySelectorAll('.section[id]');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navItems.forEach(item => item.classList.remove('active'));
+        const active = document.querySelector(`.nav-item[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
