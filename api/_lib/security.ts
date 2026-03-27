@@ -1,7 +1,7 @@
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
-import { ensureSchema, getSql } from "./db";
-import { getEnv } from "./env";
-import { firstHeader } from "./http";
+import { ensureSchema, getSql } from "./db.js";
+import { getEnv } from "./env.js";
+import { firstHeader } from "./http.js";
 
 type ApiRequest = {
   headers: Record<string, string | string[] | undefined>;

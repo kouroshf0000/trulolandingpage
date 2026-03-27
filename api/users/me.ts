@@ -1,5 +1,5 @@
-import { methodNotAllowed, sendJson } from "../_lib/http";
-import { getSalesSessionUser } from "../_lib/security";
+import { methodNotAllowed, sendJson } from "../_lib/http.js";
+import { getSalesSessionUser } from "../_lib/security.js";
 
 export default async function handler(
   req: { headers: Record<string, string | string[] | undefined>; method?: string },

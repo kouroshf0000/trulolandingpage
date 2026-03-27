@@ -1,10 +1,10 @@
-import { ensureSchema, getSql } from "./_lib/db";
-import { emailBody, emailFooter, emailHeader, emailTemplate, sendEmail, truloEmailTemplate } from "./_lib/email";
-import { getOptionalEnv } from "./_lib/env";
-import { methodNotAllowed, readJsonBody, sendJson } from "./_lib/http";
-import { checkRateLimit } from "./_lib/security";
-import { sanitizeForEmailHeader, stripHtml } from "./_lib/text";
-import { verifyTurnstile } from "./_lib/turnstile";
+import { ensureSchema, getSql } from "./_lib/db.js";
+import { emailBody, emailFooter, emailHeader, emailTemplate, sendEmail, truloEmailTemplate } from "./_lib/email.js";
+import { getOptionalEnv } from "./_lib/env.js";
+import { methodNotAllowed, readJsonBody, sendJson } from "./_lib/http.js";
+import { checkRateLimit } from "./_lib/security.js";
+import { sanitizeForEmailHeader, stripHtml } from "./_lib/text.js";
+import { verifyTurnstile } from "./_lib/turnstile.js";
 
 const VALID_USER_TYPES = ["has-space", "needs-space"] as const;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

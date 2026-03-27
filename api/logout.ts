@@ -1,5 +1,5 @@
-import { clearSalesSession } from "./_lib/security";
-import { methodNotAllowed, sendJson } from "./_lib/http";
+import { clearSalesSession } from "./_lib/security.js";
+import { methodNotAllowed, sendJson } from "./_lib/http.js";
 
 export default async function handler(
   req: { method?: string },

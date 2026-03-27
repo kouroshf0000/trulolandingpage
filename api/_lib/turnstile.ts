@@ -1,4 +1,4 @@
-import { getClientIp } from "./security";
+import { getClientIp } from "./security.js";
 
 type ApiRequest = {
   headers: Record<string, string | string[] | undefined>;

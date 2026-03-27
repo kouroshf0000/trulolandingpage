@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BOSTON_AREAS } from "./bostonAreas";
+import { BOSTON_AREAS } from "./bostonAreas.js";
 
 const validBostonKeys = new Set(Object.keys(BOSTON_AREAS));
 
@@ -28,7 +28,7 @@ export const ownersSubmitSchema = z.object({
     { message: "Invalid boston_areas" }
   ),
   ma_areas_other: optionalString(200),
-  "cf-turnstile-response": z.string().min(1),
+  "cf-turnstile-response": z.string().min(1).optional(),
 });
 
 export type OwnersSubmitInput = z.infer<typeof ownersSubmitSchema>;

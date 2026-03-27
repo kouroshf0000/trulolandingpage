@@ -1,6 +1,6 @@
-import { getOptionalEnv } from "./_lib/env";
-import { methodNotAllowed, readJsonBody, sendJson } from "./_lib/http";
-import { issueSalesSession } from "./_lib/security";
+import { getOptionalEnv } from "./_lib/env.js";
+import { methodNotAllowed, readJsonBody, sendJson } from "./_lib/http.js";
+import { issueSalesSession } from "./_lib/security.js";
 
 const DEFAULT_EMAIL = "contact@jointrulo.com";
 const DEFAULT_PASSWORD = "FillSpace1";

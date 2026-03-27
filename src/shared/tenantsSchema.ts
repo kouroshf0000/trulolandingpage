@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BOSTON_AREAS } from "./bostonAreas";
+import { BOSTON_AREAS } from "./bostonAreas.js";
 
 const validBostonKeys = new Set(Object.keys(BOSTON_AREAS));
 
@@ -27,7 +27,7 @@ export const tenantsSubmitSchema = z.object({
   monthly_budget: z.enum(["under_2k", "2_5k", "5_10k", "10_20k", "20k_plus"]),
   how_heard: optionalString(200),
   notes: optionalString(1000),
-  "cf-turnstile-response": z.string().min(1),
+  "cf-turnstile-response": z.string().min(1).optional(),
 }).refine(
   (data) => !data.boston_areas.includes("other") || (data.boston_areas_other && data.boston_areas_other.trim().length > 0),
   { message: "Specify neighborhood when selecting Other", path: ["boston_areas_other"] }

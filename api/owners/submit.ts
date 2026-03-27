@@ -1,12 +1,12 @@
-import { ensureSchema, getSql } from "../_lib/db";
-import { emailBody, emailFooter, emailHeader, emailTemplate, sendEmail } from "../_lib/email";
-import { getOptionalEnv } from "../_lib/env";
-import { methodNotAllowed, readJsonBody, sendJson } from "../_lib/http";
-import { checkRateLimit } from "../_lib/security";
-import { sanitizeForEmailHeader, stripHtml } from "../_lib/text";
-import { verifyTurnstile } from "../_lib/turnstile";
-import { BOSTON_AREAS } from "../../src/shared/bostonAreas";
-import { ownersSubmitSchema } from "../../src/shared/ownersSchema";
+import { ensureSchema, getSql } from "../_lib/db.js";
+import { emailBody, emailFooter, emailHeader, emailTemplate, sendEmail } from "../_lib/email.js";
+import { getOptionalEnv } from "../_lib/env.js";
+import { methodNotAllowed, readJsonBody, sendJson } from "../_lib/http.js";
+import { checkRateLimit } from "../_lib/security.js";
+import { sanitizeForEmailHeader, stripHtml } from "../_lib/text.js";
+import { verifyTurnstile } from "../_lib/turnstile.js";
+import { BOSTON_AREAS } from "../../src/shared/bostonAreas.js";
+import { ownersSubmitSchema } from "../../src/shared/ownersSchema.js";
 
 export default async function handler(req: { body?: unknown; method?: string; url?: string }, res: { status: (code: number) => { json: (body: unknown) => void } }): Promise<void> {
   if (req.method !== "POST") {

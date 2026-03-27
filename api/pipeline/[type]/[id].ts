@@ -1,6 +1,6 @@
-import { ensureSchema, getSql } from "../../_lib/db";
-import { methodNotAllowed, queryValue, readJsonBody, sendJson } from "../../_lib/http";
-import { getSalesSessionUser } from "../../_lib/security";
+import { ensureSchema, getSql } from "../../_lib/db.js";
+import { methodNotAllowed, queryValue, readJsonBody, sendJson } from "../../_lib/http.js";
+import { getSalesSessionUser } from "../../_lib/security.js";
 
 const TABLES: Record<string, string> = {
   host: "pipeline_hosts",
