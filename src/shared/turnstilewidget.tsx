@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || "1x00000000000000000000AA";
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY?.trim();
 
 export interface TurnstileWidgetProps {
   callback: string;
@@ -15,7 +15,7 @@ export function TurnstileWidget({ callback, theme = "light", size = "normal" }: 
 
   useEffect(() => {
     const el = containerRef.current;
-    if (!el) return;
+    if (!el || !TURNSTILE_SITE_KEY) return;
     const render = () => {
       const w = (window as unknown as { turnstile?: { render: (el: HTMLElement, o: object) => string } }).turnstile;
       if (w && el && !widgetIdRef.current) {

@@ -1,6 +1,6 @@
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { ensureSchema, getSql } from "./db.js";
-import { getEnv } from "./env.js";
+import { requireConfiguredEnv } from "./env.js";
 import { firstHeader } from "./http.js";
 
 type ApiRequest = {
@@ -14,7 +14,7 @@ type ApiResponse = {
 const RATE_LIMIT = 5;
 const RATE_WINDOW_MS = 60_000;
 export const SALES_SESSION_COOKIE = "trulo_sales_session";
-const SALES_SESSION_MAX_AGE = 60 * 24 * 60 * 60;
+const SALES_SESSION_MAX_AGE = 12 * 60 * 60;
 
 function base64UrlEncode(value: string): string {
   return Buffer.from(value, "utf8").toString("base64url");
@@ -25,7 +25,17 @@ function base64UrlDecode(value: string): string {
 }
 
 function sessionSecret(): string {
-  return getEnv("SALES_SESSION_SECRET", "dev-sales-session-secret-change-me");
+  const secret = requireConfiguredEnv("SALES_SESSION_SECRET");
+  if (secret.length < 32) {
+    throw new Error("SALES_SESSION_SECRET must be at least 32 characters");
+  }
+  return secret;
+}
+
+export function safeEqual(left: string, right: string): boolean {
+  const leftHash = createHash("sha256").update(left).digest();
+  const rightHash = createHash("sha256").update(right).digest();
+  return timingSafeEqual(leftHash, rightHash);
 }
 
 function sign(value: string): string {
@@ -37,8 +47,9 @@ function serializeCookie(name: string, value: string, maxAge: number): string {
     `${name}=${value}`,
     "Path=/",
     "HttpOnly",
-    "SameSite=Lax",
+    "SameSite=Strict",
     `Max-Age=${maxAge}`,
+    "Priority=High",
   ];
   if (process.env.NODE_ENV === "production") {
     parts.push("Secure");

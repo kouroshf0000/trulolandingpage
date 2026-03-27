@@ -1,6 +1,6 @@
 import { ensureSchema, getSql } from "../_lib/db.js";
-import { methodNotAllowed, readJsonBody, sendJson } from "../_lib/http.js";
-import { getSalesSessionUser } from "../_lib/security.js";
+import { methodNotAllowed, readJsonBody, requireTrustedOrigin, sendJson } from "../_lib/http.js";
+import { checkRateLimit, getSalesSessionUser } from "../_lib/security.js";
 
 type PipelineRow = {
   id: string;
@@ -38,8 +38,14 @@ function mapRow(row: PipelineRow) {
   };
 }
 
+function normalizePipelineString(value: unknown, max: number): string {
+  if (typeof value !== "string") return "";
+  const normalized = value.trim();
+  return normalized.length <= max ? normalized : "";
+}
+
 export default async function handler(
-  req: { body?: unknown; headers: Record<string, string | string[] | undefined>; method?: string },
+  req: { body?: unknown; headers: Record<string, string | string[] | undefined>; method?: string; url?: string },
   res: { status: (code: number) => { json: (body: unknown) => void } }
 ): Promise<void> {
   if (!["GET", "POST"].includes(req.method ?? "")) {
@@ -47,6 +53,7 @@ export default async function handler(
     return;
   }
   if (!requireUser(req, res)) return;
+  if (req.method === "POST" && !requireTrustedOrigin(req as never, res as never)) return;
 
   try {
     await ensureSchema();
@@ -68,12 +75,18 @@ export default async function handler(
 
     const body = await readJsonBody(req as never);
     const type = typeof body.type === "string" ? body.type : "";
-    const id = typeof body.id === "string" ? body.id : "";
-    const name = typeof body.name === "string" ? body.name : "";
-    const contact = typeof body.contact === "string" ? body.contact : "";
-    const detail = typeof body.detail === "string" ? body.detail : "";
-    const notes = typeof body.notes === "string" ? body.notes : "";
+    const id = normalizePipelineString(body.id, 100);
+    const name = normalizePipelineString(body.name, 120);
+    const contact = normalizePipelineString(body.contact, 200);
+    const detail = normalizePipelineString(body.detail, 500);
+    const notes = normalizePipelineString(body.notes, 5000);
     const steps = typeof body.steps === "object" && body.steps ? body.steps : {};
+    const path = req.url ? new URL(req.url, "https://trulo.local").pathname : "/api/pipeline";
+
+    if (!(await checkRateLimit(req as never, path))) {
+      sendJson(res as never, 429, { error: "Too many requests. Please try again later." });
+      return;
+    }
 
     if (!type || !id || !name) {
       sendJson(res as never, 400, { error: "type, id, name required" });
@@ -91,8 +104,8 @@ export default async function handler(
         values (${id}, ${name}, ${contact}, ${detail}, ${notes}, ${sql.json(steps as never)})
       `;
     } else if (type === "booking") {
-      const hostId = typeof body.hostId === "string" ? body.hostId : null;
-      const tenantId = typeof body.tenantId === "string" ? body.tenantId : null;
+      const hostId = normalizePipelineString(body.hostId, 100) || null;
+      const tenantId = normalizePipelineString(body.tenantId, 100) || null;
       const monthlyFee = typeof body.monthlyFee === "number" ? body.monthlyFee : null;
       await sql`
         insert into pipeline_bookings (id, name, contact, detail, notes, steps, host_id, tenant_id, monthly_fee)

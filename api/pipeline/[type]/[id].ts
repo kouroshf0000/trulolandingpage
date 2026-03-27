@@ -1,6 +1,6 @@
 import { ensureSchema, getSql } from "../../_lib/db.js";
-import { methodNotAllowed, queryValue, readJsonBody, sendJson } from "../../_lib/http.js";
-import { getSalesSessionUser } from "../../_lib/security.js";
+import { methodNotAllowed, queryValue, readJsonBody, requireTrustedOrigin, sendJson } from "../../_lib/http.js";
+import { checkRateLimit, getSalesSessionUser } from "../../_lib/security.js";
 
 const TABLES: Record<string, string> = {
   host: "pipeline_hosts",
@@ -17,6 +17,7 @@ export default async function handler(
     headers: Record<string, string | string[] | undefined>;
     method?: string;
     query: Record<string, string | string[] | undefined>;
+    url?: string;
   },
   res: { status: (code: number) => { json: (body: unknown) => void } }
 ): Promise<void> {
@@ -29,6 +30,7 @@ export default async function handler(
     sendJson(res as never, 401, { error: "Unauthorized" });
     return;
   }
+  if (!requireTrustedOrigin(req as never, res as never)) return;
 
   const type = queryValue(req.query.type);
   const id = queryValue(req.query.id);
@@ -41,6 +43,12 @@ export default async function handler(
   try {
     await ensureSchema();
     const sql = getSql();
+    const path = req.url ? new URL(req.url, "https://trulo.local").pathname : "/api/pipeline/item";
+
+    if (!(await checkRateLimit(req as never, path))) {
+      sendJson(res as never, 429, { error: "Too many requests. Please try again later." });
+      return;
+    }
 
     if (req.method === "DELETE") {
       await sql.unsafe(`delete from ${table} where id = $1`, [id]);
@@ -50,7 +58,12 @@ export default async function handler(
 
     const body = await readJsonBody(req as never);
     if (body.notes != null) {
-      await sql.unsafe(`update ${table} set notes = $1 where id = $2`, [String(body.notes), id]);
+      const notes = String(body.notes);
+      if (notes.length > 5000) {
+        sendJson(res as never, 400, { error: "Notes are too long" });
+        return;
+      }
+      await sql.unsafe(`update ${table} set notes = $1 where id = $2`, [notes, id]);
     }
     if (body.steps != null) {
       await sql.unsafe(`update ${table} set steps = $1 where id = $2`, [JSON.stringify(body.steps), id]);

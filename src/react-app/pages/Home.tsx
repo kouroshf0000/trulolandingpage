@@ -76,6 +76,7 @@ const features = [
 
 export default function Home() {
   const navigate = useNavigate();
+  const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY?.trim();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -374,12 +375,14 @@ export default function Home() {
                 </div>
 
                 {/* Cloudflare Turnstile - bot protection (CISO Directive 02) */}
-                <div
-                  className="cf-turnstile"
-                  data-sitekey={import.meta.env.VITE_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
-                  data-theme="light"
-                  data-size="compact"
-                />
+                {turnstileSiteKey ? (
+                  <div
+                    className="cf-turnstile"
+                    data-sitekey={turnstileSiteKey}
+                    data-theme="light"
+                    data-size="compact"
+                  />
+                ) : null}
 
                 {/* Submit button */}
                 <button
@@ -608,12 +611,14 @@ export default function Home() {
                     </button>
                   </div>
                   {/* Cloudflare Turnstile - bot protection (CISO Directive 02) */}
-                  <div
-                    className="cf-turnstile"
-                    data-sitekey={import.meta.env.VITE_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
-                    data-theme="light"
-                    data-size="compact"
-                  />
+                  {turnstileSiteKey ? (
+                    <div
+                      className="cf-turnstile"
+                      data-sitekey={turnstileSiteKey}
+                      data-theme="light"
+                      data-size="compact"
+                    />
+                  ) : null}
                 </form>
                 <div className="flex flex-wrap justify-center gap-2 sm:gap-3 text-xs gap-y-2">
                   <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-50 border border-slate-200 text-[#334155] transition-all duration-300 ease-out hover:bg-slate-100 hover:border-slate-300">

@@ -24,9 +24,10 @@ Backend:
 
 Notes:
 
-- `SUPABASE_DB_URL` should be your direct Postgres connection string from Supabase.
+- `SUPABASE_DB_URL` should be your Supabase session pooler Postgres connection string and should include `?sslmode=require`.
 - The API bootstraps its own tables on first request, so you do not need a separate migration step just to get started.
 - The frontend remains a Vite SPA and is routed through `vercel.json`.
+- `SALES_LOGIN_EMAIL`, `SALES_LOGIN_PASSWORD`, and `SALES_SESSION_SECRET` are required in deployed environments. The app no longer falls back to development defaults.
 
 ### Deploying to Vercel
 
@@ -42,5 +43,5 @@ Vercel will build the SPA into `dist/` and serve the backend from the `api/` dir
 1. Create a Supabase project and copy its Postgres connection string into `SUPABASE_DB_URL`.
 2. Create a Resend API key and verify the sending domain or sender used in `RESEND_FROM_EMAIL`.
 3. Set `PUBLIC_APP_URL` to your final Vercel domain or custom domain.
-4. Set a strong `SALES_SESSION_SECRET` and change the default sales login credentials.
+4. Set a strong `SALES_SESSION_SECRET` of at least 32 characters and use a unique sales login password.
 5. Deploy to Vercel and submit one test lead to auto-create the tables.

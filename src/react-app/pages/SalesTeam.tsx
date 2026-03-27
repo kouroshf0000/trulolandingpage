@@ -61,7 +61,7 @@ export default function SalesTeam() {
   );
 
   const logout = useCallback(async () => {
-    await fetch("/api/logout", { credentials: "include" });
+    await fetch("/api/logout", { method: "POST", credentials: "include" });
     setUser(null);
   }, []);
 

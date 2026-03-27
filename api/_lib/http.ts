@@ -1,3 +1,5 @@
+import { getOptionalEnv } from "./env.js";
+
 type ApiRequest = {
   body?: unknown;
   method?: string;
@@ -26,6 +28,7 @@ export async function readJsonBody(req: ApiRequest): Promise<Record<string, unkn
 }
 
 export function sendJson(res: ApiResponse, status: number, body: unknown): void {
+  applyApiSecurityHeaders(res);
   res.status(status).json(body);
 }
 
@@ -40,4 +43,59 @@ export function firstHeader(value: string | string[] | undefined): string | unde
 
 export function queryValue(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
+}
+
+export function applyApiSecurityHeaders(res: ApiResponse): void {
+  res.setHeader("Cache-Control", "no-store");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+}
+
+function normalizeOrigin(value: string): string | null {
+  try {
+    return new URL(value).origin;
+  } catch {
+    return null;
+  }
+}
+
+function requestOrigin(req: ApiRequest): string | null {
+  const origin = firstHeader(req.headers.origin);
+  return origin ? normalizeOrigin(origin) : null;
+}
+
+function requestHostOrigin(req: ApiRequest): string | null {
+  const host = firstHeader(req.headers["x-forwarded-host"]) ?? firstHeader(req.headers.host);
+  if (!host) return null;
+  const proto = firstHeader(req.headers["x-forwarded-proto"]) ?? (process.env.NODE_ENV === "production" ? "https" : "http");
+  return `${proto}://${host}`;
+}
+
+export function hasTrustedOrigin(req: ApiRequest): boolean {
+  const origin = requestOrigin(req);
+  if (!origin) return true;
+
+  const publicAppUrl = getOptionalEnv("PUBLIC_APP_URL");
+  if (publicAppUrl && normalizeOrigin(publicAppUrl) === origin) {
+    return true;
+  }
+
+  if (requestHostOrigin(req) === origin) {
+    return true;
+  }
+
+  try {
+    const { hostname } = new URL(origin);
+    return hostname === "localhost" || hostname === "127.0.0.1";
+  } catch {
+    return false;
+  }
+}
+
+export function requireTrustedOrigin(req: ApiRequest, res: ApiResponse): boolean {
+  if (hasTrustedOrigin(req)) return true;
+  sendJson(res, 403, { error: "Untrusted origin" });
+  return false;
 }
