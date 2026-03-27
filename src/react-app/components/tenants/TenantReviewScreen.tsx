@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import { BOSTON_AREAS } from "@/shared/bostonAreas";
 
 const SPACE_TYPE_LABELS: Record<string, string> = {
@@ -30,7 +29,6 @@ const TIMELINE_LABELS: Record<string, string> = {
   "3_6_months": "3–6 months out",
   planning_ahead: "Just planning ahead",
 };
-const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || "1x00000000000000000000AA";
 const BUDGET_LABELS: Record<string, string> = {
   under_2k: "Under $2k",
   "2_5k": "$2–5k",
@@ -59,8 +57,6 @@ interface TenantReviewData {
 interface TenantReviewScreenProps {
   data: TenantReviewData;
   onEditStep: (step: number) => void;
-  turnstileToken: string;
-  onTurnstileChange: (token: string) => void;
   onSubmit: () => void;
   submitting: boolean;
   error?: string;
@@ -69,7 +65,6 @@ interface TenantReviewScreenProps {
 function TenantReviewScreen({
   data,
   onEditStep,
-  turnstileToken,
   onSubmit,
   submitting,
   error,
@@ -83,41 +78,6 @@ function TenantReviewScreen({
         : []),
   ].join(", ");
   const spaceTypeLabels = data.spaceTypes.map((t) => SPACE_TYPE_LABELS[t] ?? t).join(", ");
-  const turnstileRef = useRef<HTMLDivElement>(null);
-  const widgetIdRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    const el = turnstileRef.current;
-    if (!el) return;
-    const render = () => {
-      const w = (window as unknown as { turnstile?: { render: (el: HTMLElement, o: object) => string } }).turnstile;
-      if (w && el && !widgetIdRef.current) {
-        widgetIdRef.current = w.render(el, {
-          sitekey: TURNSTILE_SITE_KEY,
-          callback: "onTenantsTurnstileSuccess",
-          theme: "light",
-          size: "normal",
-        });
-      }
-    };
-    if ((window as unknown as { turnstile?: unknown }).turnstile) render();
-    else {
-      const id = setInterval(() => {
-        if ((window as unknown as { turnstile?: unknown }).turnstile) {
-          clearInterval(id);
-          render();
-        }
-      }, 50);
-      return () => clearInterval(id);
-    }
-    return () => {
-      const w = (window as unknown as { turnstile?: { remove?: (id: string) => void } }).turnstile;
-      if (widgetIdRef.current && w?.remove) {
-        w.remove(widgetIdRef.current);
-        widgetIdRef.current = null;
-      }
-    };
-  }, []);
 
   return (
     <div className="max-w-lg mx-auto space-y-6">
@@ -193,14 +153,12 @@ function TenantReviewScreen({
         </section>
       </div>
 
-      <div ref={turnstileRef} />
-
       {error && <p className="text-sm text-red-500">{error}</p>}
 
       <button
         type="button"
         onClick={onSubmit}
-        disabled={!turnstileToken || submitting}
+        disabled={submitting}
         className="w-full px-6 py-3 rounded-2xl bg-[#E67451] text-white font-medium hover:bg-[#d4633e] disabled:opacity-50 disabled:cursor-not-allowed transition-all touch-manipulation flex items-center justify-center gap-2 shadow-md"
       >
         {submitting ? (

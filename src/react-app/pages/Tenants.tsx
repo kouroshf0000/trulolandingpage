@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { Link } from "react-router";
 import TruloLogo from "@/react-app/components/TruloLogo";
@@ -22,7 +22,6 @@ export default function Tenants() {
 
   const [screen, setScreen] = useState<Screen>("welcome");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [turnstileToken, setTurnstileToken] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | undefined>();
 
@@ -47,14 +46,6 @@ export default function Tenants() {
   const [monthlyBudget, setMonthlyBudget] = useState("");
   const [howHeard, setHowHeard] = useState("");
   const [notes, setNotes] = useState("");
-
-  useEffect(() => {
-    (window as unknown as Record<string, (t: string) => void>).onTenantsTurnstileSuccess = (token: string) =>
-      setTurnstileToken(token);
-    return () => {
-      delete (window as unknown as Record<string, unknown>).onTenantsTurnstileSuccess;
-    };
-  }, []);
 
   const validateStep1 = useCallback((): boolean => {
     const e: Record<string, string> = {};
@@ -114,14 +105,6 @@ export default function Tenants() {
   };
 
   const handleSubmit = async () => {
-    const token =
-      turnstileToken ||
-      (document.querySelector('.tenants-review textarea[name="cf-turnstile-response"]') as HTMLTextAreaElement | null)
-        ?.value?.trim();
-    if (!token) {
-      setSubmitError("Please complete the security check.");
-      return;
-    }
     setSubmitError(undefined);
     setSubmitting(true);
 
@@ -140,7 +123,6 @@ export default function Tenants() {
       monthly_budget: monthlyBudget,
       how_heard: howHeard.trim() || undefined,
       notes: notes.trim() || undefined,
-      "cf-turnstile-response": token,
     };
 
     try {
@@ -315,8 +297,6 @@ export default function Tenants() {
                   notes,
                 }}
                 onEditStep={(step) => setScreen(step as Screen)}
-                turnstileToken={turnstileToken}
-                onTurnstileChange={setTurnstileToken}
                 onSubmit={handleSubmit}
                 submitting={submitting}
                 error={submitError}

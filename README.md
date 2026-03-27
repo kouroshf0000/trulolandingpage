@@ -11,14 +11,9 @@ npm run dev
 
 ### Required environment variables
 
-Frontend:
-
-- `VITE_TURNSTILE_SITE_KEY`
-
 Backend:
 
 - `SUPABASE_DB_URL`
-- `TURNSTILE_SECRET_KEY`
 - `RESEND_API_KEY`
 - `RESEND_FROM_EMAIL`
 - `ADMIN_NOTIFICATION_EMAIL`
@@ -46,7 +41,6 @@ Vercel will build the SPA into `dist/` and serve the backend from the `api/` dir
 
 1. Create a Supabase project and copy its Postgres connection string into `SUPABASE_DB_URL`.
 2. Create a Resend API key and verify the sending domain or sender used in `RESEND_FROM_EMAIL`.
-3. Create or reuse a Cloudflare Turnstile site and secret key.
-4. Set `PUBLIC_APP_URL` to your final Vercel domain or custom domain.
-5. Set a strong `SALES_SESSION_SECRET` and change the default sales login credentials.
-6. Deploy to Vercel and submit one test lead to auto-create the tables.
+3. Set `PUBLIC_APP_URL` to your final Vercel domain or custom domain.
+4. Set a strong `SALES_SESSION_SECRET` and change the default sales login credentials.
+5. Deploy to Vercel and submit one test lead to auto-create the tables.

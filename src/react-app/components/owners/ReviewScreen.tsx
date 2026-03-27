@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import { BOSTON_AREAS } from "@/shared/bostonAreas";
 
 const ROLE_LABELS: Record<string, string> = {
@@ -48,59 +47,19 @@ interface ReviewData {
 interface ReviewScreenProps {
   data: ReviewData;
   onEditStep: (step: number) => void;
-  turnstileToken: string;
-  onTurnstileChange: (token: string) => void;
   onSubmit: () => void;
   submitting: boolean;
   error?: string;
 }
 
-const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || "1x00000000000000000000AA";
-
 export function ReviewScreen({
   data,
   onEditStep,
-  turnstileToken,
   onSubmit,
   submitting,
   error,
 }: ReviewScreenProps) {
   const bostonLabels = data.bostonAreas.map((k) => BOSTON_AREAS[k] ?? k).join(", ");
-  const turnstileRef = useRef<HTMLDivElement>(null);
-  const widgetIdRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    const el = turnstileRef.current;
-    if (!el) return;
-    const render = () => {
-      const w = (window as unknown as { turnstile?: { render: (el: HTMLElement, o: object) => string } }).turnstile;
-      if (w && el && !widgetIdRef.current) {
-        widgetIdRef.current = w.render(el, {
-          sitekey: TURNSTILE_SITE_KEY,
-          callback: "onOwnersTurnstileSuccess",
-          theme: "light",
-          size: "normal",
-        });
-      }
-    };
-    if ((window as unknown as { turnstile?: unknown }).turnstile) render();
-    else {
-      const id = setInterval(() => {
-        if ((window as unknown as { turnstile?: unknown }).turnstile) {
-          clearInterval(id);
-          render();
-        }
-      }, 50);
-      return () => clearInterval(id);
-    }
-    return () => {
-      const w = (window as unknown as { turnstile?: { remove?: (id: string) => void } }).turnstile;
-      if (widgetIdRef.current && w?.remove) {
-        w.remove(widgetIdRef.current);
-        widgetIdRef.current = null;
-      }
-    };
-  }, []);
 
   return (
     <div className="max-w-lg mx-auto space-y-6">
@@ -173,14 +132,12 @@ export function ReviewScreen({
         </section>
       </div>
 
-      <div ref={turnstileRef} />
-
       {error && <p className="text-sm text-red-500">{error}</p>}
 
       <button
         type="button"
         onClick={onSubmit}
-        disabled={!turnstileToken || submitting}
+        disabled={submitting}
         className="w-full px-6 py-3 rounded-2xl bg-[#E67451] text-white font-medium hover:bg-[#d4633e] disabled:opacity-50 disabled:cursor-not-allowed transition-all touch-manipulation flex items-center justify-center gap-2 shadow-md"
       >
         {submitting ? (

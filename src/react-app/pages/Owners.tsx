@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { Link } from "react-router";
 import TruloLogo from "@/react-app/components/TruloLogo";
@@ -23,7 +23,6 @@ export default function Owners() {
 
   const [screen, setScreen] = useState<Screen>("welcome");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [turnstileToken, setTurnstileToken] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | undefined>();
 
@@ -48,14 +47,6 @@ export default function Owners() {
   const [portfolioCount, setPortfolioCount] = useState("");
   const [bostonAreas, setBostonAreas] = useState<string[]>([]);
   const [maAreasOther, setMaAreasOther] = useState("");
-
-  useEffect(() => {
-    (window as unknown as Record<string, (t: string) => void>).onOwnersTurnstileSuccess = (token: string) =>
-      setTurnstileToken(token);
-    return () => {
-      delete (window as unknown as Record<string, unknown>).onOwnersTurnstileSuccess;
-    };
-  }, []);
 
   const validateStep1 = useCallback((): boolean => {
     const e: Record<string, string> = {};
@@ -116,14 +107,6 @@ export default function Owners() {
   };
 
   const handleSubmit = async () => {
-    const token =
-      turnstileToken ||
-      (document.querySelector('.owners-review textarea[name="cf-turnstile-response"]') as HTMLTextAreaElement | null)
-        ?.value?.trim();
-    if (!token) {
-      setSubmitError("Please complete the security check.");
-      return;
-    }
     setSubmitError(undefined);
     setSubmitting(true);
 
@@ -144,7 +127,6 @@ export default function Owners() {
       portfolio_count: portfolioCount,
       boston_areas: bostonAreas,
       ma_areas_other: maAreasOther.trim() || undefined,
-      "cf-turnstile-response": token,
     };
 
     try {
@@ -322,8 +304,6 @@ export default function Owners() {
                 maAreasOther,
               }}
               onEditStep={(step) => setScreen(step as Screen)}
-              turnstileToken={turnstileToken}
-              onTurnstileChange={setTurnstileToken}
               onSubmit={handleSubmit}
               submitting={submitting}
               error={submitError}
